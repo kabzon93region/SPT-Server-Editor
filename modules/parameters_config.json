@@ -1,0 +1,387 @@
+{
+  "basic_parameters": {
+    "_id": {
+      "type": "string",
+      "label": "ID предмета",
+      "description": "Уникальный идентификатор предмета",
+      "required": true,
+      "readonly": true
+    },
+    "_name": {
+      "type": "string",
+      "label": "Название",
+      "description": "Отображаемое название предмета",
+      "required": true
+    },
+    "_parent": {
+      "type": "string",
+      "label": "Родительский класс",
+      "description": "Класс-родитель для наследования",
+      "required": true
+    },
+    "_type": {
+      "type": "enum",
+      "label": "Тип предмета",
+      "description": "Основной тип предмета",
+      "options": [
+        "Item",
+        "Node"
+      ],
+      "required": true
+    },
+    "_props": {
+      "type": "object",
+      "label": "Свойства предмета",
+      "description": "Основные свойства предмета",
+      "required": true,
+      "readonly": true
+    }
+  },
+  "item_properties": {
+    "ShortName": {
+      "type": "string",
+      "label": "Короткое название",
+      "description": "Краткое название для интерфейса"
+    },
+    "Description": {
+      "type": "text",
+      "label": "Описание",
+      "description": "Подробное описание предмета"
+    },
+    "QuestItem": {
+      "type": "boolean",
+      "label": "Квестовый предмет",
+      "description": "Является ли предмет квестовым"
+    },
+    "BasePrice": {
+      "type": "integer",
+      "label": "Базовая цена (₽)",
+      "description": "Базовая цена предмета в рублях",
+      "min": 0
+    },
+    "BackgroundColor": {
+      "type": "enum",
+      "label": "Цвет фона",
+      "description": "Цвет фона в интерфейсе",
+      "options": [
+        "blue",
+        "yellow",
+        "red",
+        "green",
+        "purple",
+        "orange",
+        "default"
+      ]
+    },
+    "Weight": {
+      "type": "float",
+      "label": "Вес (кг)",
+      "description": "Вес предмета в килограммах",
+      "min": 0,
+      "max": 1000
+    },
+    "Width": {
+      "type": "integer",
+      "label": "Ширина (слоты)",
+      "description": "Ширина предмета в слотах инвентаря",
+      "min": 1,
+      "max": 10
+    },
+    "Height": {
+      "type": "integer",
+      "label": "Высота (слоты)",
+      "description": "Высота предмета в слотах инвентаря",
+      "min": 1,
+      "max": 10
+    },
+    "Durability": {
+      "type": "integer",
+      "label": "Прочность",
+      "description": "Текущая прочность предмета",
+      "min": 0
+    },
+    "MaxDurability": {
+      "type": "integer",
+      "label": "Макс. прочность",
+      "description": "Максимальная прочность предмета",
+      "min": 0
+    },
+    "StackObjectsCount": {
+      "type": "integer",
+      "label": "Количество в стопке",
+      "description": "Текущее количество предметов в стопке",
+      "min": 1
+    },
+    "StackMaxSize": {
+      "type": "integer",
+      "label": "Макс. размер стопки",
+      "description": "Максимальное количество в стопке",
+      "min": 1
+    },
+    "CanSellOnRagfair": {
+      "type": "boolean",
+      "label": "Можно продать на барахолке",
+      "description": "Можно ли продать предмет на барахолке"
+    },
+    "CanRequireOnRagfair": {
+      "type": "boolean",
+      "label": "Можно купить на барахолке",
+      "description": "Можно ли купить предмет на барахолке"
+    },
+    "InsuranceDisabled": {
+      "type": "boolean",
+      "label": "Страховка отключена",
+      "description": "Отключена ли страховка для предмета"
+    },
+    "ExamineExperience": {
+      "type": "integer",
+      "label": "Опыт за изучение",
+      "description": "Опыт за изучение предмета",
+      "min": 0
+    },
+    "ExamineTime": {
+      "type": "integer",
+      "label": "Время изучения (сек)",
+      "description": "Время изучения предмета в секундах",
+      "min": 0
+    },
+    "LootExperience": {
+      "type": "integer",
+      "label": "Опыт за подбор",
+      "description": "Опыт за подбор предмета",
+      "min": 0
+    },
+    "Unlootable": {
+      "type": "boolean",
+      "label": "Нельзя подобрать",
+      "description": "Нельзя ли подобрать предмет"
+    },
+    "IsUndiscardable": {
+      "type": "boolean",
+      "label": "Нельзя выбросить",
+      "description": "Нельзя ли выбросить предмет"
+    },
+    "DiscardLimit": {
+      "type": "integer",
+      "label": "Лимит выбрасывания",
+      "description": "Лимит на выбрасывание предмета",
+      "min": 0
+    },
+    "DiscardTime": {
+      "type": "integer",
+      "label": "Время выбрасывания",
+      "description": "Время выбрасывания предмета в секундах",
+      "min": 0
+    }
+  },
+  "additional_parameters": {
+    "RarityPvE": {
+      "type": "enum",
+      "label": "Редкость",
+      "description": "Редкость предмета в PvE",
+      "options": [
+        "Common",
+        "Rare",
+        "Superrare",
+        "Not_exist",
+        "Not_exist_quest"
+      ]
+    },
+    "ItemSound": {
+      "type": "string",
+      "label": "Звук предмета",
+      "description": "Звук при взаимодействии с предметом"
+    },
+    "DropSoundType": {
+      "type": "enum",
+      "label": "Тип звука при падении",
+      "description": "Тип звука при падении предмета",
+      "options": [
+        "generic",
+        "metal",
+        "glass",
+        "wood",
+        "fabric",
+        "plastic"
+      ]
+    },
+    "DropSound": {
+      "type": "string",
+      "label": "Звук при падении",
+      "description": "Звук при падении предмета"
+    },
+    "PickupSound": {
+      "type": "string",
+      "label": "Звук при подборе",
+      "description": "Звук при подборе предмета"
+    },
+    "Prefab": {
+      "type": "object",
+      "label": "Префаб",
+      "description": "Информация о префабе предмета",
+      "readonly": true
+    },
+    "PrefabPath": {
+      "type": "string",
+      "label": "Путь к префабу",
+      "description": "Путь к файлу префаба",
+      "readonly": true
+    },
+    "UsePrefab": {
+      "type": "object",
+      "label": "Использовать префаб",
+      "description": "Объект с информацией о префабе (path и rcid)",
+      "readonly": true
+    },
+    "GridSize": {
+      "type": "object",
+      "label": "Размер сетки",
+      "description": "Размер предмета в сетке инвентаря",
+      "readonly": true
+    },
+    "UnlootableFromSide": {
+      "type": "array",
+      "label": "Нельзя подобрать со стороны",
+      "description": "Стороны, с которых нельзя подобрать предмет"
+    },
+    "UnlootableFromSlot": {
+      "type": "array",
+      "label": "Нельзя подобрать из слота",
+      "description": "Слоты, из которых нельзя подобрать предмет"
+    },
+    "Foldable": {
+      "type": "boolean",
+      "label": "Складываемый",
+      "description": "Можно ли сложить предмет"
+    },
+    "FoldedSlot": {
+      "type": "string",
+      "label": "Слот в сложенном виде",
+      "description": "ID слота в сложенном виде"
+    },
+    "FoldedSize": {
+      "type": "object",
+      "label": "Размер в сложенном виде",
+      "description": "Размер предмета в сложенном виде"
+    },
+    "FoldedSlotId": {
+      "type": "string",
+      "label": "ID слота в сложенном виде",
+      "description": "Идентификатор слота в сложенном виде"
+    },
+    "FoldedSlotSize": {
+      "type": "integer",
+      "label": "Размер слота в сложенном виде",
+      "description": "Размер слота в сложенном виде",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontal": {
+      "type": "integer",
+      "label": "Горизонтальный размер слота",
+      "description": "Горизонтальный размер слота в сложенном виде",
+      "min": 1
+    },
+    "FoldedSlotSizeVertical": {
+      "type": "integer",
+      "label": "Вертикальный размер слота",
+      "description": "Вертикальный размер слота в сложенном виде",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPx": {
+      "type": "integer",
+      "label": "Горизонтальный размер в пикселях",
+      "description": "Горизонтальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPx": {
+      "type": "integer",
+      "label": "Вертикальный размер в пикселях",
+      "description": "Вертикальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxMax": {
+      "type": "integer",
+      "label": "Макс. горизонтальный размер в пикселях",
+      "description": "Максимальный горизонтальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxMax": {
+      "type": "integer",
+      "label": "Макс. вертикальный размер в пикселях",
+      "description": "Максимальный вертикальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxMin": {
+      "type": "integer",
+      "label": "Мин. горизонтальный размер в пикселях",
+      "description": "Минимальный горизонтальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxMin": {
+      "type": "integer",
+      "label": "Мин. вертикальный размер в пикселях",
+      "description": "Минимальный вертикальный размер слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxStep": {
+      "type": "integer",
+      "label": "Шаг горизонтального размера в пикселях",
+      "description": "Шаг изменения горизонтального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxStep": {
+      "type": "integer",
+      "label": "Шаг вертикального размера в пикселях",
+      "description": "Шаг изменения вертикального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxDefault": {
+      "type": "integer",
+      "label": "По умолчанию горизонтальный размер в пикселях",
+      "description": "Размер по умолчанию горизонтального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxDefault": {
+      "type": "integer",
+      "label": "По умолчанию вертикальный размер в пикселях",
+      "description": "Размер по умолчанию вертикального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxMaxDefault": {
+      "type": "integer",
+      "label": "Макс. по умолчанию горизонтальный размер в пикселях",
+      "description": "Максимальный размер по умолчанию горизонтального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxMaxDefault": {
+      "type": "integer",
+      "label": "Макс. по умолчанию вертикальный размер в пикселях",
+      "description": "Максимальный размер по умолчанию вертикального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxMinDefault": {
+      "type": "integer",
+      "label": "Мин. по умолчанию горизонтальный размер в пикселях",
+      "description": "Минимальный размер по умолчанию горизонтального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxMinDefault": {
+      "type": "integer",
+      "label": "Мин. по умолчанию вертикальный размер в пикселях",
+      "description": "Минимальный размер по умолчанию вертикального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeHorizontalPxStepDefault": {
+      "type": "integer",
+      "label": "Шаг по умолчанию горизонтального размера в пикселях",
+      "description": "Шаг по умолчанию изменения горизонтального размера слота в пикселях",
+      "min": 1
+    },
+    "FoldedSlotSizeVerticalPxStepDefault": {
+      "type": "integer",
+      "label": "Шаг по умолчанию вертикального размера в пикселях",
+      "description": "Шаг по умолчанию изменения вертикального размера слота в пикселях",
+      "min": 1
+    }
+  }
+}

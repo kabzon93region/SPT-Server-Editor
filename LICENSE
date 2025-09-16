@@ -1,0 +1,59 @@
+MIT License
+
+Copyright (c) 2024 kabzon93region
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+THIRD-PARTY LICENSES
+
+This software includes the following third-party components:
+
+1. orjson (MIT License)
+   - Copyright (c) 2019, 2020, 2021, 2022, 2023 Ilya Zykin
+   - https://github.com/ijl/orjson
+   - Used for fast JSON processing
+
+2. PyYAML (MIT License)
+   - Copyright (c) 2017-2021 Ingy döt Net
+   - Copyright (c) 2006-2016 Kirill Simonov
+   - https://github.com/yaml/pyyaml
+   - Used for YAML configuration file processing
+
+3. httpx (BSD License)
+   - Copyright (c) 2019-2023 Tom Christie
+   - https://github.com/encode/httpx
+   - Used for HTTP API requests
+
+4. requests (Apache 2.0 License)
+   - Copyright 2019 Kenneth Reitz
+   - https://github.com/psf/requests
+   - Used for HTTP requests during database scanning
+
+5. typing-extensions (MIT License)
+   - Copyright (c) 2017-2023 Python Software Foundation
+   - https://github.com/python/typing_extensions
+   - Used for type hints compatibility
+
+6. tkinter (Python Software Foundation License)
+   - Part of Python standard library
+   - Used for graphical user interface
+
+All third-party components are used in accordance with their respective licenses.

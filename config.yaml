@@ -1,0 +1,91 @@
+# SPT Server Editor - Конфигурация
+# Основные настройки программы
+
+# Настройки сканера базы данных
+scanner:
+  # Базовый URL API SPT-Tarkov
+  api_base_url: "https://db.sp-tarkov.com/api/item"
+  
+  # Задержка между запросами (секунды)
+  request_delay: 0.3
+  
+  # Таймаут запроса (секунды)
+  request_timeout: 10.0
+  
+  # Максимальное количество одновременных соединений
+  max_connections: 10
+  
+  # Максимальное количество keep-alive соединений
+  max_keepalive_connections: 5
+
+# Настройки кэша
+cache:
+  # Время жизни кэша (дни)
+  cache_lifetime_days: 7
+  
+  # Папка для кэша
+  cache_directory: "cache"
+  
+  # Файл кэша предметов
+  items_cache_file: "items_cache.json"
+  
+  # Читаемый файл кэша
+  readable_cache_file: "items_readable.json"
+
+# Настройки интерфейса
+ui:
+  # Размер окна по умолчанию
+  default_window_size:
+    width: 800
+    height: 600
+  
+  # Минимальный размер окна
+  min_window_size:
+    width: 600
+    height: 400
+  
+  # Тема интерфейса
+  theme: "clam"
+  
+  # Шрифты
+  fonts:
+    title: ["Arial", 16, "bold"]
+    header: ["Arial", 12, "bold"]
+    info: ["Arial", 10]
+    code: ["Consolas", 9]
+
+# Настройки логирования
+logging:
+  # Уровень логирования
+  level: "INFO"
+  
+  # Формат логов
+  format: "%(asctime)s - %(levelname)s - %(message)s"
+  
+  # Файл лога сканера
+  scanner_log_file: "cache/scan_db.log"
+
+# Настройки производительности
+performance:
+  # Использовать orjson для JSON операций
+  use_orjson: true
+  
+  # Использовать httpx для HTTP запросов
+  use_httpx: true
+  
+  # Кэшировать результаты поиска
+  cache_search_results: true
+  
+  # Максимальное количество результатов поиска
+  max_search_results: 1000
+
+# Настройки безопасности
+security:
+  # Проверять SSL сертификаты
+  verify_ssl: true
+  
+  # User-Agent для запросов
+  user_agent: "SPT-Server-Editor/1.0"
+  
+  # Максимальный размер ответа (байты)
+  max_response_size: 10485760  # 10 MB
