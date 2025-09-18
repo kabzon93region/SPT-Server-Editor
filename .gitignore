@@ -142,3 +142,6 @@ database/
 logs/
 images/
 *.dat
+.github
+.git
+.github/
