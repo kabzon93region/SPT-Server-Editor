@@ -615,81 +615,82 @@ def create_tree(parent: tk.Widget, columns: List[str],
     tree_frame.grid_rowconfigure(0, weight=1)
     tree_frame.grid_columnconfigure(0, weight=1)
     
-    return treedef add_window_controls(window: tk.Tk) -> None:
-    """
-       U ± °  » µ  Q µ ! » µ X µ !  U  !S W! °  » µ  Q!  U T  U X
-    
-    Args:
-        window:  [ T  U  ‘ »!  ‘ U ± °  » µ  Q! ! » µ X µ !  U  !S W! °  » µ  Q!
-    """
-    try:
-        #   U · ‘ ° µ X  T  U W T Q !S W! °  » µ  Q!  U T  U X
-        control_buttons = create_window_control_buttons(window)
-        
-        #    ° · X µ!0  ° µ X  T  U W T Q    W! °  U X   µ!!&   µ X !S V »!S
-        control_buttons.place(relx=1.0, rely=0.0, anchor="ne")
-        
-    except Exception as e:
-        print(f" [!¬  Q ± T °  ‘ U ± °  » µ  Q! !S W! °  » µ  Q!  U T  U X: {e}")
-
-def create_window_control_buttons(parent: tk.Widget) -> tk.Frame:
-    """
-      U · ‘ °  Q µ  T  U W U T !S W! °  » µ  Q!  U T  U X
-    
-    Args:
-        parent:    U ‘ Q!  µ »!
-! T Q !   Q ‘ ¶ µ! 
-        
-    Returns:
-        Frame:  ¤! µ ! X !  T  U W T ° X Q !S W! °  » µ  Q!
-    """
-    #   U · ‘ ° µ X ! ! µ ! X  ‘ »!  T  U W U T
-    button_frame = tk.Frame(parent, bg='#f0f0f0')
-    
-    #  Y  U W T ° !  U! °!!  Q  °  Q!
-    minimize_btn = tk.Button(
-        button_frame,
-        text="2¬  ",
-        width=3,
-        height=1,
-        command=lambda: parent.iconify(),
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0
-    )
-    minimize_btn.pack(side=tk.LEFT, padx=1)
-    
-    #  Y  U W T ° ! ° ·  U! °!!  Q  °  Q!/  U!!!  °  U  » µ  Q!
-    def toggle_maximize():
-        if parent.state() == 'zoomed':
-            parent.state('normal')
-        else:
-            parent.state('zoomed')
-    
-    maximize_btn = tk.Button(
-        button_frame,
-        text="2 ",
-        width=3,
-        height=1,
-        command=toggle_maximize,
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0
-    )
-    maximize_btn.pack(side=tk.LEFT, padx=1)
-    
-    #  Y  U W T °  · ° T!!9 !  Q!
-    close_btn = tk.Button(
-        button_frame,
-        text=" ",
-        width=3,
-        height=1,
-        command=parent.quit,
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0,
-        fg='red'
-    )
-    close_btn.pack(side=tk.LEFT, padx=1)
-    
-    return button_frame
+    return treed e f   a d d _ w i n d o w _ c o n t r o l s ( w i n d o w :   t k . T k )   - >   N o n e :  
+         " " "  
+            U ±  °   »  µ   Q µ   ! »  µ  X µ  !  U   !S W! °   »  µ   Q!   U T  U X 
+          
+         A r g s :  
+                 w i n d o w :    [ T  U   ‘ » !   ‘ U ±  °   »  µ   Q!  ! »  µ  X µ  !  U   !S W! °   »  µ   Q! 
+         " " "  
+         t r y :  
+                 #     U ·  ‘ °  µ  X   T  U W T Q  !S W! °   »  µ   Q!   U T  U X 
+                 c o n t r o l _ b u t t o n s   =   c r e a t e _ w i n d o w _ c o n t r o l _ b u t t o n s ( w i n d o w )  
+                  
+                 #       °  ·  X µ !0  °  µ  X   T  U W T Q      W! °   U X    µ !!&   µ  X  !S V » !S 
+                 c o n t r o l _ b u t t o n s . p l a c e ( r e l x = 1 . 0 ,   r e l y = 0 . 0 ,   a n c h o r = " n e " )  
+                  
+         e x c e p t   E x c e p t i o n   a s   e :  
+                 p r i n t ( f "  [!¬  Q ±  T °    ‘ U ±  °   »  µ   Q!  !S W! °   »  µ   Q!   U T  U X:   { e } " )  
+  
+ d e f   c r e a t e _ w i n d o w _ c o n t r o l _ b u t t o n s ( p a r e n t :   t k . W i d g e t )   - >   t k . F r a m e :  
+         " " "  
+           U ·  ‘ °   Q µ    T  U W U T  !S W! °   »  µ   Q!   U T  U X 
+          
+         A r g s :  
+                 p a r e n t :       U ‘ Q!  µ  » !
+! T Q !    Q ‘ ¶  µ !  
+                  
+         R e t u r n s :  
+                 F r a m e :    ¤ ! µ  ! X  !   T  U W T °  X Q  !S W! °   »  µ   Q! 
+         " " "  
+         #     U ·  ‘ °  µ  X  ! ! µ  ! X   ‘ » !   T  U W U T 
+         b u t t o n _ f r a m e   =   t k . F r a m e ( p a r e n t ,   b g = ' # f 0 f 0 f 0 ' )  
+          
+         #    Y  U W T °   !  U! ° !!  Q  °   Q! 
+         m i n i m i z e _ b t n   =   t k . B u t t o n (  
+                 b u t t o n _ f r a m e ,  
+                 t e x t = " 2¬  " ,  
+                 w i d t h = 3 ,  
+                 h e i g h t = 1 ,  
+                 c o m m a n d = l a m b d a :   p a r e n t . i c o n i f y ( ) ,  
+                 b g = ' # f 0 f 0 f 0 ' ,  
+                 r e l i e f = ' f l a t ' ,  
+                 b d = 0  
+         )  
+         m i n i m i z e _ b t n . p a c k ( s i d e = t k . L E F T ,   p a d x = 1 )  
+          
+         #    Y  U W T °   ! °  ·   U! ° !!  Q  °   Q!/   U!!!  °   U  »  µ   Q! 
+         d e f   t o g g l e _ m a x i m i z e ( ) :  
+                 i f   p a r e n t . s t a t e ( )   = =   ' z o o m e d ' :  
+                         p a r e n t . s t a t e ( ' n o r m a l ' )  
+                 e l s e :  
+                         p a r e n t . s t a t e ( ' z o o m e d ' )  
+          
+         m a x i m i z e _ b t n   =   t k . B u t t o n (  
+                 b u t t o n _ f r a m e ,  
+                 t e x t = " 2 " ,  
+                 w i d t h = 3 ,  
+                 h e i g h t = 1 ,  
+                 c o m m a n d = t o g g l e _ m a x i m i z e ,  
+                 b g = ' # f 0 f 0 f 0 ' ,  
+                 r e l i e f = ' f l a t ' ,  
+                 b d = 0  
+         )  
+         m a x i m i z e _ b t n . p a c k ( s i d e = t k . L E F T ,   p a d x = 1 )  
+          
+         #    Y  U W T °    ·  °  T!!9 !  Q! 
+         c l o s e _ b t n   =   t k . B u t t o n (  
+                 b u t t o n _ f r a m e ,  
+                 t e x t = "  " ,  
+                 w i d t h = 3 ,  
+                 h e i g h t = 1 ,  
+                 c o m m a n d = p a r e n t . q u i t ,  
+                 b g = ' # f 0 f 0 f 0 ' ,  
+                 r e l i e f = ' f l a t ' ,  
+                 b d = 0 ,  
+                 f g = ' r e d '  
+         )  
+         c l o s e _ b t n . p a c k ( s i d e = t k . L E F T ,   p a d x = 1 )  
+          
+         r e t u r n   b u t t o n _ f r a m e  
+ 
