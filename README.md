@@ -133,7 +133,13 @@ SPT_Data/Server/
     ├── DEPENDENCIES_ANALYSIS.md    # Анализ зависимостей
     ├── BULK_PARAMETERS_GUIDE.md    # Руководство по массовому изменению
     ├── DEBUG_LOGGING_GUIDE.md      # Руководство по логированию
-    └── COMMENTS_DOCUMENTATION.md   # Документация комментариев
+    ├── COMMENTS_DOCUMENTATION.md   # Документация комментариев
+    ├── CONTRIBUTING.md             # Руководство по участию
+    ├── SECURITY.md                 # Политика безопасности
+    ├── SUPPORT.md                  # Поддержка пользователей
+    ├── CODE_OF_CONDUCT.md         # Кодекс поведения
+    ├── CHANGELOG.md                # Журнал изменений
+    └── RELEASE_NOTES.md            # Заметки о релизах
 ```
 
 ## Требования

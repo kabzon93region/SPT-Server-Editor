@@ -2,4 +2,7 @@
 *.7z
 *.rar
 *_venv
+.github
+.git
+
 # Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)

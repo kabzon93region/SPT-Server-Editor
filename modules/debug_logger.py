@@ -186,30 +186,6 @@ class DebugLogger:
         color = color_map.get(level, Colors.WHITE)
         return f"{color}{message}{Colors.RESET}"
     
-    def _safe_serialize(self, obj: Any) -> Any:
-        """Безопасная сериализация объекта для JSON"""
-        if obj is None:
-            return None
-        elif isinstance(obj, (str, int, float, bool)):
-            return obj
-        elif isinstance(obj, (list, tuple)):
-            return [self._safe_serialize(item) for item in obj]
-        elif isinstance(obj, dict):
-            return {str(k): self._safe_serialize(v) for k, v in obj.items()}
-        elif hasattr(obj, '__dict__'):
-            # Для объектов с атрибутами - сериализуем только простые типы
-            result = {}
-            for key, value in obj.__dict__.items():
-                if not key.startswith('_'):  # Пропускаем приватные атрибуты
-                    try:
-                        result[key] = self._safe_serialize(value)
-                    except Exception:
-                        result[key] = f"<{type(value).__name__}>"
-            return result
-        else:
-            # Для всех остальных объектов - возвращаем строковое представление
-            return f"<{type(obj).__name__}>"
-    
     def _log(self, level: LogLevel, message: str, category: LogCategory = LogCategory.SYSTEM, 
              extra_data: Dict[str, Any] = None, exception: Exception = None):
         """Базовый метод логирования"""
@@ -220,12 +196,7 @@ class DebugLogger:
             # Формируем полное сообщение
             full_message = message
             if extra_data:
-                # Безопасная сериализация extra_data
-                try:
-                    safe_extra_data = self._safe_serialize(extra_data)
-                    full_message += f" | Extra: {json.dumps(safe_extra_data, ensure_ascii=False, indent=2)}"
-                except Exception as e:
-                    full_message += f" | Extra: [Ошибка сериализации: {str(e)}]"
+                full_message += f" | Extra: {json.dumps(extra_data, ensure_ascii=False, indent=2)}"
             
             if exception:
                 full_message += f" | Exception: {str(exception)} | Traceback: {traceback.format_exc()}"

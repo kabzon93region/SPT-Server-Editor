@@ -154,7 +154,19 @@ def bind_context_menus_to_widget(parent_widget):
 def setup_context_menus_for_module(module_instance):
     """Настраивает контекстные меню для всего модуля"""
     try:
-        # Привязываем контекстные меню ко всем полям ввода в окне модуля
-        bind_context_menus_to_widget(module_instance.window)
+        # Определяем главное окно модуля
+        main_window = None
+        if hasattr(module_instance, 'window'):
+            main_window = module_instance.window
+        elif hasattr(module_instance, 'parent'):
+            main_window = module_instance.parent
+        elif hasattr(module_instance, 'root'):
+            main_window = module_instance.root
+        
+        if main_window:
+            # Привязываем контекстные меню ко всем полям ввода в окне модуля
+            bind_context_menus_to_widget(main_window)
+        else:
+            print("Не удалось найти главное окно модуля для настройки контекстных меню")
     except Exception as e:
         print(f"Ошибка настройки контекстных меню: {e}")
