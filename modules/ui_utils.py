@@ -51,645 +51,320 @@ def create_scrollable_frame(parent: tk.Widget) -> tuple[tk.Frame, tk.Scrollbar]:
     
     return scrollable_frame, scrollbar
 
-def create_labeled_entry(parent: tk.Widget, label_text: str, 
-                        textvariable: Optional[tk.StringVar] = None,
-                        width: int = 20) -> tuple[ttk.Label, ttk.Entry]:
+def setup_resizable_window(window: tk.Tk, min_width: int = 800, min_height: int = 600) -> None:
     """
-    Создание поля ввода с подписью
+    Настройка окна с возможностью изменения размера
     
     Args:
-        parent: Родительский виджет
-        label_text: Текст подписи
-        textvariable: Переменная для хранения значения
-        width: Ширина поля ввода
-        
-    Returns:
-        Tuple[Label, Entry]: Подпись и поле ввода
+        window: Окно для настройки
+        min_width: Минимальная ширина
+        min_height: Минимальная высота
     """
-    label = ttk.Label(parent, text=label_text)
-    entry = ttk.Entry(parent, textvariable=textvariable, width=width)
-    
-    return label, entry
-
-def create_labeled_combobox(parent: tk.Widget, label_text: str,
-                           values: List[str], textvariable: Optional[tk.StringVar] = None,
-                           width: int = 20) -> tuple[ttk.Label, ttk.Combobox]:
-    """
-    Создание выпадающего списка с подписью
-    
-    Args:
-        parent: Родительский виджет
-        label_text: Текст подписи
-        values: Список значений
-        textvariable: Переменная для хранения значения
-        width: Ширина списка
-        
-    Returns:
-        Tuple[Label, Combobox]: Подпись и выпадающий список
-    """
-    label = ttk.Label(parent, text=label_text)
-    combobox = ttk.Combobox(parent, textvariable=textvariable, 
-                           values=values, width=width, state="readonly")
-    
-    return label, combobox
-
-def create_button(parent: tk.Widget, text: str, command: Optional[Callable] = None,
-                 width: int = 15) -> ttk.Button:
-    """
-    Создание кнопки
-    
-    Args:
-        parent: Родительский виджет
-        text: Текст кнопки
-        command: Команда для выполнения при нажатии
-        width: Ширина кнопки
-        
-    Returns:
-        Button: Созданная кнопка
-    """
-    return ttk.Button(parent, text=text, command=command, width=width)
-
-def create_treeview(parent: tk.Widget, columns: List[str], 
-                   show_headings: bool = True) -> ttk.Treeview:
-    """
-    Создание таблицы (Treeview)
-    
-    Args:
-        parent: Родительский виджет
-        columns: Список колонок
-        show_headings: Показывать заголовки
-        
-    Returns:
-        Treeview: Созданная таблица
-    """
-    tree = ttk.Treeview(parent, columns=columns, show='headings' if show_headings else 'tree')
-    
-    # Настройка колонок
-    for col in columns:
-        tree.heading(col, text=col)
-        tree.column(col, width=100, minwidth=50)
-    
-    return tree
-
-def create_scrollable_treeview(parent: tk.Widget, columns: List[str],
-                              show_headings: bool = True) -> tuple[tk.Frame, ttk.Treeview, ttk.Scrollbar]:
-    """
-    Создание прокручиваемой таблицы
-    
-    Args:
-        parent: Родительский виджет
-        columns: Список колонок
-        show_headings: Показывать заголовки
-        
-    Returns:
-        Tuple[Frame, Treeview, Scrollbar]: Контейнер, таблица и скроллбар
-    """
-    # Создаем фрейм для таблицы
-    tree_frame = ttk.Frame(parent)
-    
-    # Создаем таблицу
-    tree = ttk.Treeview(tree_frame, columns=columns, show='headings' if show_headings else 'tree')
-    
-    # Создаем скроллбары
-    v_scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
-    h_scrollbar = ttk.Scrollbar(tree_frame, orient="horizontal", command=tree.xview)
-    
-    # Настройка таблицы
-    tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
-    
-    # Настройка колонок
-    for col in columns:
-        tree.heading(col, text=col)
-        tree.column(col, width=100, minwidth=50)
-    
-    # Размещение элементов
-    tree.grid(row=0, column=0, sticky="nsew")
-    v_scrollbar.grid(row=0, column=1, sticky="ns")
-    h_scrollbar.grid(row=1, column=0, sticky="ew")
-    
-    # Настройка растягивания
-    tree_frame.grid_rowconfigure(0, weight=1)
-    tree_frame.grid_columnconfigure(0, weight=1)
-    
-    return tree_frame, tree, v_scrollbar
+    window.minsize(min_width, min_height)
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_columnconfigure(0, weight=1)
 
 def apply_modern_style() -> None:
     """
-    Применение светлого стиля к приложению
+    Применение современного стиля к приложению
     """
     style = ttk.Style()
     
     # Настройка темы
-    try:
-        style.theme_use('clam')  # Современная тема
-    except:
-        pass  # Если тема недоступна, используем по умолчанию
+    style.theme_use('clam')
     
-    # Глобальная настройка светлой темы для всех tkinter виджетов
-    setup_global_light_theme()
+    # Стили для кнопок
+    style.configure('TButton', padding=6)
+    style.configure('Accent.TButton', padding=8, font=('Arial', 9, 'bold'))
     
-    # Цветовая схема светлой темы
-    light_bg = '#ffffff'      # Белый фон
-    light_fg = '#000000'      # Черный текст
-    light_select = '#0078d4'  # Синий для выделения
-    light_entry = '#ffffff'   # Белый для полей ввода
-    light_button = '#0078d4'  # Синий для кнопок
-    light_frame = '#f5f5f5'   # Светло-серый фон для фреймов
-    light_hover = '#106ebe'   # Темно-синий при наведении
-    light_disabled = '#cccccc' # Серый для отключенных элементов
+    # Стили для фреймов
+    style.configure('Card.TFrame', relief='raised', borderwidth=1)
+    style.configure('Info.TFrame', relief='sunken', borderwidth=1)
     
-    # Настройка цветов для всех элементов
-    style.configure('TLabel', 
-                   background=light_bg, 
-                   foreground=light_fg, 
-                   font=('Segoe UI', 9))
+    # Стили для лейблов
+    style.configure('Title.TLabel', font=('Arial', 12, 'bold'))
+    style.configure('Subtitle.TLabel', font=('Arial', 10, 'bold'))
+    style.configure('Info.TLabel', font=('Arial', 9))
     
-    style.configure('TButton', 
-                   background=light_button, 
-                   foreground='white',
-                   font=('Segoe UI', 9),
-                   borderwidth=1,
-                   relief='solid')
+    # Стили для полей ввода
+    style.configure('TEntry', padding=4)
+    style.configure('Search.TEntry', padding=6)
     
-    style.configure('TEntry', 
-                   fieldbackground=light_entry, 
-                   background=light_entry,
-                   foreground=light_fg, 
-                   font=('Segoe UI', 9),
-                   borderwidth=1,
-                   relief='solid',
-                   bordercolor='#cccccc')
-    
-    style.configure('TCombobox', 
-                   fieldbackground=light_entry, 
-                   background=light_entry,
-                   foreground=light_fg, 
-                   font=('Segoe UI', 9),
-                   borderwidth=1,
-                   relief='solid',
-                   bordercolor='#cccccc')
-    
-    style.configure('Treeview', 
-                   background=light_bg, 
-                   foreground=light_fg, 
-                   font=('Consolas', 9),
-                   fieldbackground=light_bg,
-                   borderwidth=1,
-                   relief='solid',
-                   bordercolor='#cccccc')
-    
-    style.configure('TFrame', 
-                   background=light_bg,
-                   borderwidth=0)
-    
-    style.configure('TLabelFrame', 
-                   background=light_frame, 
-                   foreground=light_fg,
-                   borderwidth=1,
-                   relief='solid',
-                   bordercolor='#cccccc')
-    
-    style.configure('TNotebook', 
-                   background=light_bg,
-                   borderwidth=0)
-    
-    style.configure('TNotebook.Tab', 
-                   background=light_frame,
-                   foreground=light_fg,
-                   padding=[10, 5])
-    
-    style.configure('TCheckbutton', 
-                   background=light_bg,
-                   foreground=light_fg,
-                   font=('Segoe UI', 9))
-    
-    style.configure('TRadiobutton', 
-                   background=light_bg,
-                   foreground=light_fg,
-                   font=('Segoe UI', 9))
-    
-    style.configure('TScrollbar', 
-                   background=light_frame,
-                   troughcolor=light_frame,
-                   borderwidth=0,
-                   arrowcolor=light_fg,
-                   darkcolor=light_frame,
-                   lightcolor=light_frame)
-    
-    style.configure('Horizontal.TProgressbar', 
-                   troughcolor='#e0e0e0',  # Светло-серый фон
-                   background=light_select,  # Синий индикатор
-                   borderwidth=0,
-                   lightcolor=light_select,
-                   darkcolor=light_select)
-    
-    # Настройка состояний кнопок
-    style.map('TButton',
-             background=[('active', light_hover),
-                        ('pressed', '#005a9e')])
-    
-    # Настройка состояний полей ввода
-    style.map('TEntry',
-             fieldbackground=[('focus', light_entry),
-                            ('!focus', light_entry)],
-             bordercolor=[('focus', light_select),
-                         ('!focus', '#cccccc')])
-    
-    # Настройка состояний выпадающих списков
-    style.map('TCombobox',
-             fieldbackground=[('focus', light_entry),
-                            ('!focus', light_entry)],
-             bordercolor=[('focus', light_select),
-                         ('!focus', '#cccccc')])
-    
-    # Настройка состояний таблиц
-    style.map('Treeview',
-             background=[('selected', light_select)],
-             foreground=[('selected', 'white')])
+    # Стили для Treeview
+    style.configure('Treeview', rowheight=25)
+    style.configure('Treeview.Heading', font=('Arial', 9, 'bold'))
 
-def setup_global_light_theme() -> None:
+def setup_auto_scaling(window: tk.Tk, base_width: int = 1920, base_height: int = 1080) -> None:
     """
-    Глобальная настройка светлой темы для всех tkinter виджетов
-    """
-    # Цветовая схема светлой темы
-    light_bg = '#ffffff'
-    light_fg = '#000000'
-    light_select = '#0078d4'
-    light_entry = '#ffffff'
-    light_button = '#0078d4'
-    light_frame = '#f5f5f5'
-    
-    import tkinter
-    root = tkinter._default_root
-    if root is None:
-        root = tkinter.Tk()
-        root.withdraw()  # Скрываем окно
-    
-    root.option_add('*background', light_bg)
-    root.option_add('*foreground', light_fg)
-    root.option_add('*selectBackground', light_select)
-    root.option_add('*selectForeground', 'white')
-    root.option_add('*activeBackground', light_select)
-    root.option_add('*activeForeground', 'white')
-    root.option_add('*highlightBackground', light_bg)
-    root.option_add('*highlightColor', light_select)
-    root.option_add('*insertBackground', light_fg)
-    root.option_add('*troughColor', light_frame)
-    root.option_add('*borderWidth', 1)
-    root.option_add('*relief', 'solid')
-    root.option_add('*bordercolor', '#cccccc')
-    
-    # Настройки для конкретных виджетов
-    root.option_add('*Entry.background', light_entry)
-    root.option_add('*Entry.foreground', light_fg)
-    root.option_add('*Entry.borderWidth', 1)
-    root.option_add('*Entry.relief', 'solid')
-    root.option_add('*Entry.bordercolor', '#cccccc')
-    
-    root.option_add('*Text.background', light_entry)
-    root.option_add('*Text.foreground', light_fg)
-    root.option_add('*Text.insertBackground', light_fg)
-    root.option_add('*Text.selectBackground', light_select)
-    root.option_add('*Text.selectForeground', 'white')
-    
-    root.option_add('*Listbox.background', light_entry)
-    root.option_add('*Listbox.foreground', light_fg)
-    root.option_add('*Listbox.selectBackground', light_select)
-    root.option_add('*Listbox.selectForeground', 'white')
-    
-    root.option_add('*Canvas.background', light_bg)
-    root.option_add('*Canvas.foreground', light_fg)
-    
-    root.option_add('*Frame.background', light_bg)
-    root.option_add('*Label.background', light_bg)
-    root.option_add('*Label.foreground', light_fg)
-    
-    root.option_add('*Button.background', light_button)
-    root.option_add('*Button.foreground', 'white')
-    root.option_add('*Button.activeBackground', light_select)
-    root.option_add('*Button.activeForeground', 'white')
-    
-    root.option_add('*Checkbutton.background', light_bg)
-    root.option_add('*Checkbutton.foreground', light_fg)
-    root.option_add('*Checkbutton.activeBackground', light_bg)
-    root.option_add('*Checkbutton.activeForeground', light_fg)
-    
-    root.option_add('*Radiobutton.background', light_bg)
-    root.option_add('*Radiobutton.foreground', light_fg)
-    root.option_add('*Radiobutton.activeBackground', light_bg)
-    root.option_add('*Radiobutton.activeForeground', light_fg)
-    
-    root.option_add('*Scale.background', light_bg)
-    root.option_add('*Scale.foreground', light_fg)
-    root.option_add('*Scale.troughColor', light_frame)
-    root.option_add('*Scale.activeBackground', light_select)
-    
-    root.option_add('*Scrollbar.background', light_frame)
-    root.option_add('*Scrollbar.troughColor', light_frame)
-    root.option_add('*Scrollbar.activeBackground', light_select)
-    
-    root.option_add('*Menu.background', light_bg)
-    root.option_add('*Menu.foreground', light_fg)
-    root.option_add('*Menu.activeBackground', light_select)
-    root.option_add('*Menu.activeForeground', 'white')
-    
-    root.option_add('*Menubutton.background', light_button)
-    root.option_add('*Menubutton.foreground', 'white')
-    root.option_add('*Menubutton.activeBackground', light_select)
-    root.option_add('*Menubutton.activeForeground', 'white')
-
-def show_info(title: str, message: str) -> None:
-    """
-    Показать информационное сообщение
+    Настройка автоматического масштабирования для разных разрешений экрана
     
     Args:
-        title: Заголовок окна
-        message: Текст сообщения
+        window: Окно для настройки
+        base_width: Базовое разрешение по ширине
+        base_height: Базовое разрешение по высоте
     """
-    messagebox.showinfo(title, message)
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    
+    # Вычисляем коэффициент масштабирования
+    scale_x = screen_width / base_width
+    scale_y = screen_height / base_height
+    scale = min(scale_x, scale_y, 1.0)  # Не увеличиваем больше 100%
+    
+    # Применяем масштабирование
+    if scale < 1.0:
+        window.tk.call('tk', 'scaling', scale)
 
-def show_warning(title: str, message: str) -> None:
+def create_info_frame(parent: tk.Widget, title: str, info_text: str) -> ttk.Frame:
     """
-    Показать предупреждение
+    Создание информационного фрейма
     
     Args:
-        title: Заголовок окна
-        message: Текст сообщения
+        parent: Родительский виджет
+        title: Заголовок
+        info_text: Информационный текст
+        
+    Returns:
+        ttk.Frame: Информационный фрейм
     """
-    messagebox.showwarning(title, message)
+    info_frame = ttk.LabelFrame(parent, text=title, style='Info.TFrame')
+    
+    # Заголовок
+    title_label = ttk.Label(info_frame, text=title, style='Title.TLabel')
+    title_label.pack(pady=(5, 10))
+    
+    # Информационный текст
+    info_label = ttk.Label(info_frame, text=info_text, style='Info.TLabel', wraplength=400)
+    info_label.pack(pady=(0, 10))
+    
+    return info_frame
 
-def show_error(title: str, message: str) -> None:
+def create_button_frame(parent: tk.Widget, buttons: List[Dict[str, Any]]) -> ttk.Frame:
     """
-    Показать сообщение об ошибке
+    Создание фрейма с кнопками
     
     Args:
-        title: Заголовок окна
-        message: Текст сообщения
+        parent: Родительский виджет
+        buttons: Список кнопок с параметрами
+        
+    Returns:
+        ttk.Frame: Фрейм с кнопками
+    """
+    button_frame = ttk.Frame(parent)
+    
+    for i, button_config in enumerate(buttons):
+        button = ttk.Button(button_frame, **button_config)
+        button.pack(side=tk.LEFT, padx=5, pady=5)
+    
+    return button_frame
+
+def create_progress_bar(parent: tk.Widget, text: str = "Выполняется...") -> tuple[ttk.Progressbar, ttk.Label]:
+    """
+    Создание прогресс-бара с текстом
+    
+    Args:
+        parent: Родительский виджет
+        text: Текст для отображения
+        
+    Returns:
+        Tuple[Progressbar, Label]: Прогресс-бар и лейбл
+    """
+    progress_frame = ttk.Frame(parent)
+    
+    # Лейбл с текстом
+    progress_label = ttk.Label(progress_frame, text=text, style='Info.TLabel')
+    progress_label.pack(pady=(0, 5))
+    
+    # Прогресс-бар
+    progress_bar = ttk.Progressbar(progress_frame, mode='indeterminate')
+    progress_bar.pack(fill=tk.X, pady=(0, 5))
+    
+    return progress_bar, progress_label
+
+def show_error_dialog(parent: tk.Widget, title: str, message: str) -> None:
+    """
+    Показ диалога с ошибкой
+    
+    Args:
+        parent: Родительский виджет
+        title: Заголовок диалога
+        message: Сообщение об ошибке
     """
     messagebox.showerror(title, message)
 
-def ask_yes_no(title: str, message: str) -> bool:
+def show_info_dialog(parent: tk.Widget, title: str, message: str) -> None:
     """
-    Задать вопрос да/нет
+    Показ информационного диалога
     
     Args:
-        title: Заголовок окна
-        message: Текст вопроса
+        parent: Родительский виджет
+        title: Заголовок диалога
+        message: Информационное сообщение
+    """
+    messagebox.showinfo(title, message)
+
+def show_warning_dialog(parent: tk.Widget, title: str, message: str) -> None:
+    """
+    Показ диалога с предупреждением
+    
+    Args:
+        parent: Родительский виджет
+        title: Заголовок диалога
+        message: Сообщение с предупреждением
+    """
+    messagebox.showwarning(title, message)
+
+def ask_yes_no(parent: tk.Widget, title: str, message: str) -> bool:
+    """
+    Диалог с вопросом Да/Нет
+    
+    Args:
+        parent: Родительский виджет
+        title: Заголовок диалога
+        message: Вопрос
         
     Returns:
         bool: True если пользователь выбрал "Да"
     """
     return messagebox.askyesno(title, message)
 
-def ask_ok_cancel(title: str, message: str) -> bool:
+def ask_ok_cancel(parent: tk.Widget, title: str, message: str) -> bool:
     """
-    Задать вопрос ОК/Отмена
+    Диалог с кнопками OK/Отмена
     
     Args:
-        title: Заголовок окна
-        message: Текст вопроса
-        
-    Returns:
-        bool: True если пользователь выбрал "ОК"
-    """
-    return messagebox.askokcancel(title, message)
-
-def create_tooltip(widget: tk.Widget, text: str) -> None:
-    """
-    Создание всплывающей подсказки для виджета
-    
-    Args:
-        widget: Виджет для подсказки
-        text: Текст подсказки
-    """
-    def on_enter(event):
-        tooltip = tk.Toplevel()
-        tooltip.wm_overrideredirect(True)
-        tooltip.wm_geometry(f"+{event.x_root+10}+{event.y_root+10}")
-        
-        label = tk.Label(tooltip, text=text, background="#ffffe0", 
-                        relief="solid", borderwidth=1, font=('Segoe UI', 8))
-        label.pack()
-        
-        widget.tooltip = tooltip
-    
-    def on_leave(event):
-        if hasattr(widget, 'tooltip'):
-            widget.tooltip.destroy()
-            del widget.tooltip
-    
-    widget.bind("<Enter>", on_enter)
-    widget.bind("<Leave>", on_leave)
-
-def load_json_file(file_path: Path) -> Optional[Dict[str, Any]]:
-    """
-    Загрузка JSON файла
-    
-    Args:
-        file_path: Путь к файлу
-        
-    Returns:
-        Optional[Dict]: Данные из файла или None при ошибке
-    """
-    try:
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"Ошибка загрузки файла {file_path}: {e}")
-        return None
-
-def save_json_file(file_path: Path, data: Dict[str, Any]) -> bool:
-    """
-    Сохранение JSON файла
-    
-    Args:
-        file_path: Путь к файлу
-        data: Данные для сохранения
-        
-    Returns:
-        bool: True если сохранение успешно
-    """
-    try:
-        with open(file_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        return True
-    except Exception as e:
-        print(f"Ошибка сохранения файла {file_path}: {e}")
-        return False
-
-def create_progress_dialog(parent: tk.Widget, title: str, message: str) -> tuple[tk.Toplevel, ttk.Progressbar, ttk.Label]:
-    """
-    Создание диалога с прогресс-баром
-    
-    Args:
-        parent: Родительское окно
+        parent: Родительский виджет
         title: Заголовок диалога
         message: Сообщение
         
     Returns:
-        Tuple[Toplevel, Progressbar, Label]: Диалог, прогресс-бар и метка
+        bool: True если пользователь выбрал "OK"
     """
-    dialog = tk.Toplevel(parent)
-    dialog.title(title)
-    dialog.resizable(False, False)
-    dialog.grab_set()
-    
-    # Центрирование
-    center_window(dialog, 400, 120)
-    
-    # Создание элементов
-    label = ttk.Label(dialog, text=message)
-    label.pack(pady=10)
-    
-    progress = ttk.Progressbar(dialog, mode='indeterminate')
-    progress.pack(pady=10, padx=20, fill='x')
-    progress.start()
-    
-    return dialog, progress, label
+    return messagebox.askokcancel(title, message)
 
-def update_progress_dialog(progress: ttk.Progressbar, label: ttk.Label, 
-                          value: int, maximum: int, message: str = None) -> None:
+def create_search_entry(parent: tk.Widget, placeholder: str = "Поиск...") -> ttk.Entry:
     """
-    Обновление диалога прогресса
+    Создание поля поиска с плейсхолдером
     
     Args:
-        progress: Прогресс-бар
-        label: Метка
-        value: Текущее значение
-        maximum: Максимальное значение
-        message: Новое сообщение
+        parent: Родительский виджет
+        placeholder: Текст плейсхолдера
+        
+    Returns:
+        ttk.Entry: Поле поиска
     """
-    if message:
-        label.config(text=message)
+    search_entry = ttk.Entry(parent, style='Search.TEntry')
     
-    progress.config(mode='determinate', maximum=maximum, value=value)
-    progress.update()
-
-def close_progress_dialog(dialog: tk.Toplevel) -> None:
-    """
-    Закрытие диалога прогресса
+    # Добавляем плейсхолдер
+    search_entry.insert(0, placeholder)
+    search_entry.configure(foreground='gray')
     
-    Args:
-        dialog: Диалог для закрытия
-    """
-    dialog.destroy()
+    def on_focus_in(event):
+        if search_entry.get() == placeholder:
+            search_entry.delete(0, tk.END)
+            search_entry.configure(foreground='black')
+    
+    def on_focus_out(event):
+        if not search_entry.get():
+            search_entry.insert(0, placeholder)
+            search_entry.configure(foreground='gray')
+    
+    search_entry.bind('<FocusIn>', on_focus_in)
+    search_entry.bind('<FocusOut>', on_focus_out)
+    
+    return search_entry
 
-def create_tree(parent: tk.Widget, columns: List[str], 
-               show_headings: bool = True) -> ttk.Treeview:
+def create_treeview(parent: tk.Widget, columns: List[str], show_headers: bool = True) -> ttk.Treeview:
     """
-    Создание таблицы (Treeview) с прокруткой
+    Создание Treeview с настройками
     
     Args:
         parent: Родительский виджет
         columns: Список колонок
-        show_headings: Показывать заголовки
+        show_headers: Показывать заголовки
         
     Returns:
-        Treeview: Созданная таблица
+        ttk.Treeview: Настроенный Treeview
     """
-    # Создаем фрейм для таблицы
-    tree_frame = ttk.Frame(parent)
-    tree_frame.pack(fill=tk.BOTH, expand=True)
-    
-    # Создаем таблицу
-    tree = ttk.Treeview(tree_frame, columns=columns, show='headings' if show_headings else 'tree')
-    
-    # Создаем скроллбары
-    v_scrollbar = ttk.Scrollbar(tree_frame, orient="vertical", command=tree.yview)
-    h_scrollbar = ttk.Scrollbar(tree_frame, orient="horizontal", command=tree.xview)
-    
-    # Настройка таблицы
-    tree.configure(yscrollcommand=v_scrollbar.set, xscrollcommand=h_scrollbar.set)
+    tree = ttk.Treeview(parent, columns=columns, show='headings' if show_headers else 'tree')
     
     # Настройка колонок
     for col in columns:
         tree.heading(col, text=col)
         tree.column(col, width=100, minwidth=50)
     
-    # Размещение элементов
-    tree.grid(row=0, column=0, sticky="nsew")
-    v_scrollbar.grid(row=0, column=1, sticky="ns")
-    h_scrollbar.grid(row=1, column=0, sticky="ew")
-    
     # Настройка растягивания
-    tree_frame.grid_rowconfigure(0, weight=1)
-    tree_frame.grid_columnconfigure(0, weight=1)
+    tree.grid_rowconfigure(0, weight=1)
+    tree.grid_columnconfigure(0, weight=1)
     
-    return treedef add_window_controls(window: tk.Tk) -> None:
-    """
-       U � �  � �  Q � ! � � X � !  U  !S W! �  � �  Q!  U T  U X
-    
-    Args:
-        window:  [ T  U  � �!  � U � �  � �  Q! ! � � X � !  U  !S W! �  � �  Q!
-    """
-    try:
-        #   U � � � � X  T  U W T Q !S W! �  � �  Q!  U T  U X
-        control_buttons = create_window_control_buttons(window)
-        
-        #  � � � X �!0  � � X  T  U W T Q    W! �  U X   �!!&   � X !S V �!S
-        control_buttons.place(relx=1.0, rely=0.0, anchor="ne")
-        
-    except Exception as e:
-        print(f" [!�  Q � T �  � U � �  � �  Q! !S W! �  � �  Q!  U T  U X: {e}")
+    return tree
 
 def create_window_control_buttons(parent: tk.Widget) -> tk.Frame:
     """
-      U � � �  Q �  T  U W U T !S W! �  � �  Q!  U T  U X
+    Создает кнопки управления окном (свернуть, развернуть, закрыть)
     
     Args:
-        parent:  � U � Q!  � �!
-! T Q !   Q � � �! 
+        parent: Родительский виджет, к которому будут привязаны кнопки.
         
     Returns:
-        Frame:  �! � ! X !  T  U W T � X Q !S W! �  � �  Q!
+        tk.Frame: Фрейм с кнопками управления.
     """
-    #   U � � � � X ! ! � ! X  � �!  T  U W U T
-    button_frame = tk.Frame(parent, bg='#f0f0f0')
+    control_frame = ttk.Frame(parent)
     
-    #  Y  U W T � !  U! �!!  Q  �  Q!
-    minimize_btn = tk.Button(
-        button_frame,
-        text="2�  ",
-        width=3,
-        height=1,
-        command=lambda: parent.iconify(),
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0
-    )
-    minimize_btn.pack(side=tk.LEFT, padx=1)
+    # Кнопка "Свернуть"
+    minimize_button = ttk.Button(control_frame, text="—", command=lambda: parent.iconify())
+    minimize_button.pack(side=tk.LEFT, padx=1, pady=1)
     
-    #  Y  U W T � ! � �  U! �!!  Q  �  Q!/  U!!!  �  U  � �  Q!
-    def toggle_maximize():
-        if parent.state() == 'zoomed':
-            parent.state('normal')
-        else:
-            parent.state('zoomed')
+    # Кнопка "Развернуть/Восстановить"
+    # Для простоты пока только развернуть, можно добавить логику переключения
+    maximize_button = ttk.Button(control_frame, text="⬜", command=lambda: parent.state('zoomed'))
+    maximize_button.pack(side=tk.LEFT, padx=1, pady=1)
     
-    maximize_btn = tk.Button(
-        button_frame,
-        text="2 ",
-        width=3,
-        height=1,
-        command=toggle_maximize,
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0
-    )
-    maximize_btn.pack(side=tk.LEFT, padx=1)
+    # Кнопка "Закрыть"
+    close_button = ttk.Button(control_frame, text="✕", command=parent.destroy)
+    close_button.pack(side=tk.LEFT, padx=1, pady=1)
     
-    #  Y  U W T �  � � T!!9 !  Q!
-    close_btn = tk.Button(
-        button_frame,
-        text=" ",
-        width=3,
-        height=1,
-        command=parent.quit,
-        bg='#f0f0f0',
-        relief='flat',
-        bd=0,
-        fg='red'
-    )
-    close_btn.pack(side=tk.LEFT, padx=1)
+    return control_frame
+
+def add_window_controls(window: tk.Tk) -> None:
+    """
+    Добавляет кастомные элементы управления окном (свернуть, развернуть, закрыть)
+    и скрывает стандартную строку заголовка.
     
-    return button_frame
+    Args:
+        window: Главное окно Tkinter.
+    """
+    # Скрываем стандартную строку заголовка
+    window.overrideredirect(True)
+    
+    # Создаем фрейм для кастомной строки заголовка
+    title_bar = ttk.Frame(window, relief="raised", bd=2)
+    title_bar.pack(side=tk.TOP, fill=tk.X, expand=False)
+    
+    # Добавляем заголовок окна
+    title_label = ttk.Label(title_bar, text=window.title(), anchor=tk.W)
+    title_label.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=5)
+    
+    # Добавляем кнопки управления окном
+    control_buttons = create_window_control_buttons(window)
+    control_buttons.pack(side=tk.RIGHT)
+    
+    # Функции для перетаскивания окна
+    def start_move(event):
+        window.x = event.x
+        window.y = event.y
+
+    def stop_move(event):
+        window.x = None
+        window.y = None
+
+    def on_motion(event):
+        deltax = event.x - window.x
+        deltay = event.y - window.y
+        x = window.winfo_x() + deltax
+        y = window.winfo_y() + deltay
+        window.geometry(f"+{x}+{y}")
+
+    title_bar.bind("<ButtonPress-1>", start_move)
+    title_bar.bind("<ButtonRelease-1>", stop_move)
+    title_bar.bind("<B1-Motion>", on_motion)

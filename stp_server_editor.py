@@ -164,7 +164,9 @@ class SPTEditor:
         
         # Настройка главного окна приложения
         info("Настройка окна приложения", LogCategory.UI)
-        setup_resizable_window(self.root, "SPT Server Editor", 1000, 700, 800, 600, fullscreen=True)  # Настраиваем окно
+        setup_resizable_window(self.root, 800, 600)  # Настраиваем окно
+        self.root.title("SPT Server Editor")  # Устанавливаем заголовок
+        self.root.geometry("1000x700")  # Устанавливаем размер
         apply_modern_style()  # Применяем современный стиль
         center_window(self.root, 1000, 700)  # Центрируем окно на экране
         

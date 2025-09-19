@@ -186,6 +186,23 @@ class DebugLogger:
         color = color_map.get(level, Colors.WHITE)
         return f"{color}{message}{Colors.RESET}"
     
+    def _safe_serialize(self, obj: Any) -> str:
+        """Безопасная сериализация объекта в JSON"""
+        try:
+            if obj is None:
+                return "null"
+            elif isinstance(obj, (str, int, float, bool)):
+                return json.dumps(obj, ensure_ascii=False)
+            elif isinstance(obj, (list, tuple)):
+                return json.dumps([self._safe_serialize(item) for item in obj], ensure_ascii=False)
+            elif isinstance(obj, dict):
+                return json.dumps({k: self._safe_serialize(v) for k, v in obj.items()}, ensure_ascii=False)
+            else:
+                # Для сложных объектов возвращаем строковое представление
+                return f'"{str(type(obj).__name__)}"'
+        except Exception:
+            return f'"{str(type(obj).__name__)}"'
+    
     def _log(self, level: LogLevel, message: str, category: LogCategory = LogCategory.SYSTEM, 
              extra_data: Dict[str, Any] = None, exception: Exception = None):
         """Базовый метод логирования"""
@@ -196,7 +213,11 @@ class DebugLogger:
             # Формируем полное сообщение
             full_message = message
             if extra_data:
-                full_message += f" | Extra: {json.dumps(extra_data, ensure_ascii=False, indent=2)}"
+                try:
+                    serialized_extra = self._safe_serialize(extra_data)
+                    full_message += f" | Extra: {serialized_extra}"
+                except Exception as e:
+                    full_message += f" | Extra: [Ошибка сериализации: {str(e)}]"
             
             if exception:
                 full_message += f" | Exception: {str(exception)} | Traceback: {traceback.format_exc()}"
