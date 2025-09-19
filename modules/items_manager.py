@@ -151,8 +151,8 @@ class ItemsManager:
         
         # Добавляем поддержку управления окном
         try:
-            from modules.ui_utils import add_window_controls, create_window_control_buttons
-            add_window_controls(self.window)
+            from modules.ui_utils import add_module_window_controls, create_window_control_buttons
+            add_module_window_controls(self.window)
             debug("Добавлены элементы управления окном", LogCategory.UI)
         except Exception as e:
             error(f"Ошибка добавления управления окном: {e}", LogCategory.UI, exception=e)
@@ -175,8 +175,9 @@ class ItemsManager:
     
     def create_widgets(self):
         """Создание интерфейса"""
-        # Главный фрейм
-        main_frame = ttk.Frame(self.window)
+        # Главный фрейм - используем content_container если он есть
+        parent_container = getattr(self.window, 'content_container', self.window)
+        main_frame = ttk.Frame(parent_container)
         main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
         
         # Заголовок с предупреждением о разработке
@@ -512,10 +513,24 @@ class ItemsManager:
     def open_bulk_interface(self):
         """Открытие интерфейса массового изменения"""
         try:
+            info("Попытка открытия интерфейса массового изменения", LogCategory.UI)
             from modules.bulk_parameters_dialog import BulkParametersDialog
-            BulkParametersDialog(self.window, self.server_path)
+            debug("Модуль BulkParametersDialog импортирован", LogCategory.UI)
+            
+            try:
+                bulk_dialog = BulkParametersDialog(self.window, self.server_path)
+                info("Интерфейс массового изменения открыт успешно", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания BulkParametersDialog: {e}", LogCategory.ERROR, exception=e)
+                messagebox.showerror("Ошибка", f"Не удалось создать диалог массового изменения:\n{str(e)}")
+                raise
+                
+        except ImportError as e:
+            error(f"Ошибка импорта BulkParametersDialog: {e}", LogCategory.ERROR, exception=e)
+            messagebox.showerror("Ошибка", f"Не удалось загрузить модуль массового изменения:\n{str(e)}")
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось открыть интерфейс массового изменения: {str(e)}")
+            error(f"Неожиданная ошибка при открытии интерфейса массового изменения: {e}", LogCategory.ERROR, exception=e)
+            messagebox.showerror("Ошибка", f"Неожиданная ошибка при открытии интерфейса массового изменения:\n{str(e)}")
     
     def open_create_interface(self):
         """Открытие интерфейса создания предметов"""

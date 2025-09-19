@@ -26,18 +26,18 @@ import orjson as json                  # Быстрая библиотека д�
 from pathlib import Path               # Для работы с путями файловой системы
 from datetime import datetime          # Для работы с датой и временем
 
-# Импорт системы отладочного логирования
+# Импорт системы логирования loguru
 # Система логирования используется для отслеживания работы приложения
 try:
     # Импортируем основные функции логирования
-    from modules.debug_logger import get_debug_logger, LogCategory, debug, info, warning, error, critical, trace
+    from modules.loguru_logger import get_loguru_logger, LogCategory, debug, info, warning, error, critical, trace
     # Импортируем декораторы для автоматического логирования
-    from modules.debug_logger import log_function_calls, log_performance
+    from modules.loguru_logger import log_function_calls, log_performance_decorator
 except ImportError:
     # Если модуль логирования недоступен, создаем заглушки
     # Это обеспечивает работу приложения даже без системы логирования
     
-    def get_debug_logger():
+    def get_loguru_logger():
         """Заглушка для получения логгера"""
         return None
     
@@ -64,7 +64,7 @@ except ImportError:
             return func  # Возвращаем функцию без изменений
         return decorator
     
-    def log_performance(category=None):
+    def log_performance_decorator(category=None):
         """Заглушка декоратора для логирования производительности"""
         def decorator(func):
             return func  # Возвращаем функцию без изменений
@@ -667,7 +667,7 @@ Escape from Tarkov (SPT-AKI).
         messagebox.showinfo("О программе", about_text)
 
 @log_function_calls(LogCategory.SYSTEM)
-@log_performance(LogCategory.PERFORMANCE)
+@log_performance_decorator(LogCategory.PERFORMANCE)
 def main():
     """Главная функция"""
     info("Запуск главной функции приложения", LogCategory.SYSTEM)

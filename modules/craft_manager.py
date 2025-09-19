@@ -53,8 +53,8 @@ class CraftManager:
             
             # Добавляем поддержку управления окном
             try:
-                from modules.ui_utils import add_window_controls, create_window_control_buttons
-                add_window_controls(self.parent)
+                from modules.ui_utils import add_module_window_controls, create_window_control_buttons
+                add_module_window_controls(self.parent)
             except Exception as e:
                 print(f"Ошибка добавления управления окном: {e}")
             
@@ -70,6 +70,9 @@ class CraftManager:
             # Настройка контекстных меню
             setup_context_menus_for_module(self)
             
+            # Обработчик закрытия окна
+            self.parent.protocol("WM_DELETE_WINDOW", self.on_closing)
+            
         except Exception as e:
             print(f"Критическая ошибка инициализации CraftManager: {e}")
             import traceback
@@ -78,6 +81,14 @@ class CraftManager:
             import tkinter.messagebox as mb
             mb.showerror("Ошибка инициализации", f"Ошибка инициализации менеджера крафта:\n{str(e)}")
             raise
+    
+    def on_closing(self):
+        """Обработчик закрытия окна"""
+        try:
+            # Закрываем окно модуля
+            self.parent.destroy()
+        except Exception as e:
+            print(f"Ошибка при закрытии окна крафта: {e}")
     
     def setup_styles(self):
         """Настройка стилей"""
@@ -90,9 +101,19 @@ class CraftManager:
     
     def create_widgets(self):
         """Создание элементов интерфейса"""
-        # Главный контейнер
-        main_frame = ttk.Frame(self.parent, padding="10")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        # Главный контейнер - используем content_container если он есть
+        parent_container = getattr(self.parent, 'content_container', self.parent)
+        
+        # Если используем content_container, настраиваем grid
+        if hasattr(self.parent, 'content_container'):
+            parent_container.grid_rowconfigure(0, weight=1)
+            parent_container.grid_columnconfigure(0, weight=1)
+            main_frame = ttk.Frame(parent_container, padding="10")
+            main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        else:
+            # Если content_container нет, используем pack
+            main_frame = ttk.Frame(parent_container, padding="10")
+            main_frame.pack(fill=tk.BOTH, expand=True)
         
         # Заголовок
         title_label = ttk.Label(main_frame, text="🔨 Менеджер рецептов крафта", style='Header.TLabel')

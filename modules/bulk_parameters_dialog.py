@@ -12,13 +12,13 @@ import threading
 import time
 from datetime import datetime
 
-# Импорт системы отладочного логирования
+# Импорт системы логирования loguru
 try:
-    from modules.debug_logger import get_debug_logger, LogCategory, debug, info, warning, error, critical, trace
-    from modules.debug_logger import log_function_calls, log_performance
+    from modules.loguru_logger import get_loguru_logger, LogCategory, debug, info, warning, error, critical, trace
+    from modules.loguru_logger import log_function_calls, log_performance_decorator
 except ImportError:
     # Заглушки для случая, если модуль логирования недоступен
-    def get_debug_logger():
+    def get_loguru_logger():
         return None
     
     class LogCategory:
@@ -43,7 +43,7 @@ except ImportError:
             return func
         return decorator
     
-    def log_performance(category=None):
+    def log_performance_decorator(category=None):
         def decorator(func):
             return func
         return decorator
@@ -52,7 +52,7 @@ except ImportError:
 try:
     from modules.items_database import ItemsDatabase
     from modules.item_parameters_analyzer import ItemParametersAnalyzer
-    from modules.ui_utils import center_window, create_tooltip
+    from modules.ui_utils import center_window
 except ImportError:
     # Если модули не найдены, добавляем путь к модулям
     import sys
@@ -62,75 +62,158 @@ except ImportError:
     
     from items_database import ItemsDatabase
     from item_parameters_analyzer import ItemParametersAnalyzer
-    from ui_utils import center_window, create_tooltip
+    from ui_utils import center_window
 
 class BulkParametersDialog:
     """Диалог для массового изменения параметров предметов"""
     
     @log_function_calls(LogCategory.SYSTEM)
     def __init__(self, parent, server_path: Path, on_complete: Optional[Callable] = None):
-        info("Инициализация BulkParametersDialog", LogCategory.SYSTEM)
-        self.parent = parent
-        self.server_path = server_path
-        self.on_complete = on_complete
-        
-        debug(f"Путь к серверу: {server_path}", LogCategory.SYSTEM)
-        
-        # Инициализация модулей
-        info("Инициализация модулей для массового изменения", LogCategory.DATABASE)
-        self.items_db = ItemsDatabase(server_path)
-        self.analyzer = ItemParametersAnalyzer(server_path)
-        
-        # Создание диалога
-        self.dialog = tk.Toplevel(parent)
-        self.dialog.title("Массовое изменение параметров предметов")
-        self.dialog.geometry("800x700")
-        self.dialog.resizable(True, True)
-        self.dialog.transient(parent)
-        self.dialog.grab_set()
-        
-        # Центрирование
-        center_window(self.dialog, 800, 700)
-        
-        # Переменные
-        self.item_ids_text = ""
-        self.selected_parameter = ""
-        self.parameter_value = ""
-        self.is_processing = False
-        self.processing_thread = None
-        
-        # Создание интерфейса
-        self.create_widgets()
+        try:
+            info("Инициализация BulkParametersDialog", LogCategory.SYSTEM)
+            self.parent = parent
+            self.server_path = server_path
+            self.on_complete = on_complete
+            
+            debug(f"Путь к серверу: {server_path}", LogCategory.SYSTEM)
+            
+            # Инициализация модулей
+            info("Инициализация модулей для массового изменения", LogCategory.DATABASE)
+            try:
+                self.items_db = ItemsDatabase(server_path)
+                debug("ItemsDatabase инициализирован успешно", LogCategory.DATABASE)
+            except Exception as e:
+                error(f"Ошибка инициализации ItemsDatabase: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            try:
+                self.analyzer = ItemParametersAnalyzer(server_path)
+                debug("ItemParametersAnalyzer инициализирован успешно", LogCategory.DATABASE)
+            except Exception as e:
+                error(f"Ошибка инициализации ItemParametersAnalyzer: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Создание диалога
+            info("Создание диалога массового изменения", LogCategory.UI)
+            try:
+                self.dialog = tk.Toplevel(parent)
+                self.dialog.title("Массовое изменение параметров предметов")
+                self.dialog.geometry("800x700")
+                self.dialog.resizable(True, True)
+                self.dialog.transient(parent)
+                self.dialog.grab_set()
+                debug("Диалог создан успешно", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания диалога: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Центрирование
+            try:
+                center_window(self.dialog, 800, 700)
+                debug("Диалог отцентрирован", LogCategory.UI)
+            except Exception as e:
+                warning(f"Ошибка центрирования диалога: {e}", LogCategory.UI)
+            
+            # Переменные
+            self.item_ids_text = ""
+            self.selected_parameter = ""
+            self.parameter_value = ""
+            self.is_processing = False
+            self.processing_thread = None
+            
+            # Создание интерфейса
+            info("Создание интерфейса диалога", LogCategory.UI)
+            try:
+                self.create_widgets()
+                debug("Интерфейс создан успешно", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания интерфейса: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            info("BulkParametersDialog инициализирован успешно", LogCategory.SYSTEM)
+            
+        except Exception as e:
+            critical(f"Критическая ошибка инициализации BulkParametersDialog: {e}", LogCategory.ERROR, exception=e)
+            # Показываем ошибку пользователю
+            try:
+                messagebox.showerror("Ошибка", f"Не удалось инициализировать диалог массового изменения:\n{e}")
+            except:
+                pass
+            raise
         
         # Обработка закрытия
         self.dialog.protocol("WM_DELETE_WINDOW", self.on_closing)
     
     def create_widgets(self):
         """Создание элементов интерфейса"""
-        # Главный фрейм
-        main_frame = ttk.Frame(self.dialog, padding="10")
-        main_frame.pack(fill=tk.BOTH, expand=True)
-        
-        # Заголовок
-        title_label = ttk.Label(main_frame, text="⚡ Массовое изменение параметров предметов", 
-                               font=("Arial", 14, "bold"))
-        title_label.pack(pady=(0, 20))
-        
-        # Создание notebook для вкладок
-        self.notebook = ttk.Notebook(main_frame)
-        self.notebook.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
-        
-        # Вкладка "Настройка"
-        self.create_settings_tab()
-        
-        # Вкладка "Предварительный просмотр"
-        self.create_preview_tab()
-        
-        # Вкладка "Лог"
-        self.create_log_tab()
-        
-        # Кнопки управления
-        self.create_control_buttons(main_frame)
+        try:
+            info("Начало создания интерфейса диалога", LogCategory.UI)
+            
+            # Главный фрейм
+            try:
+                main_frame = ttk.Frame(self.dialog, padding="10")
+                main_frame.pack(fill=tk.BOTH, expand=True)
+                debug("Главный фрейм создан", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания главного фрейма: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Заголовок
+            try:
+                title_label = ttk.Label(main_frame, text="⚡ Массовое изменение параметров предметов", 
+                                       font=("Arial", 14, "bold"))
+                title_label.pack(pady=(0, 20))
+                debug("Заголовок создан", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания заголовка: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Создание notebook для вкладок
+            try:
+                self.notebook = ttk.Notebook(main_frame)
+                self.notebook.pack(fill=tk.BOTH, expand=True, pady=(0, 10))
+                debug("Notebook создан", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания notebook: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Вкладка "Настройка"
+            try:
+                self.create_settings_tab()
+                debug("Вкладка настроек создана", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания вкладки настроек: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Вкладка "Предварительный просмотр"
+            try:
+                self.create_preview_tab()
+                debug("Вкладка предварительного просмотра создана", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания вкладки предварительного просмотра: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Вкладка "Лог"
+            try:
+                self.create_log_tab()
+                debug("Вкладка лога создана", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания вкладки лога: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            # Кнопки управления
+            try:
+                self.create_control_buttons(main_frame)
+                debug("Кнопки управления созданы", LogCategory.UI)
+            except Exception as e:
+                error(f"Ошибка создания кнопок управления: {e}", LogCategory.ERROR, exception=e)
+                raise
+            
+            info("Интерфейс диалога создан успешно", LogCategory.UI)
+            
+        except Exception as e:
+            critical(f"Критическая ошибка создания интерфейса: {e}", LogCategory.ERROR, exception=e)
+            raise
     
     def create_settings_tab(self):
         """Создание вкладки настроек"""
@@ -823,19 +906,46 @@ class BulkParametersDialog:
     
     def on_closing(self):
         """Обработка закрытия диалога"""
-        if self.is_processing:
-            result = messagebox.askyesno("Подтверждение", 
-                                       "Идет обработка данных. Вы уверены, что хотите закрыть?")
-            if result:
-                self.is_processing = False
-                if self.processing_thread and self.processing_thread.is_alive():
-                    self.processing_thread.join(timeout=1)
+        try:
+            info("Начало закрытия диалога массового изменения", LogCategory.UI)
+            
+            if self.is_processing:
+                debug("Диалог закрывается во время обработки", LogCategory.UI)
+                result = messagebox.askyesno("Подтверждение", 
+                                           "Идет обработка данных. Вы уверены, что хотите закрыть?")
+                if result:
+                    self.is_processing = False
+                    if self.processing_thread and self.processing_thread.is_alive():
+                        debug("Ожидание завершения потока обработки", LogCategory.UI)
+                        self.processing_thread.join(timeout=1)
+                    try:
+                        self.dialog.destroy()
+                        debug("Диалог уничтожен", LogCategory.UI)
+                    except Exception as e:
+                        error(f"Ошибка уничтожения диалога: {e}", LogCategory.ERROR, exception=e)
+            else:
+                try:
+                    self.dialog.destroy()
+                    debug("Диалог уничтожен", LogCategory.UI)
+                except Exception as e:
+                    error(f"Ошибка уничтожения диалога: {e}", LogCategory.ERROR, exception=e)
+            
+            if self.on_complete:
+                try:
+                    debug("Вызов callback функции", LogCategory.UI)
+                    self.on_complete()
+                except Exception as e:
+                    error(f"Ошибка вызова callback функции: {e}", LogCategory.ERROR, exception=e)
+            
+            info("Диалог массового изменения закрыт успешно", LogCategory.UI)
+            
+        except Exception as e:
+            critical(f"Критическая ошибка при закрытии диалога: {e}", LogCategory.ERROR, exception=e)
+            # Принудительно уничтожаем диалог
+            try:
                 self.dialog.destroy()
-        else:
-            self.dialog.destroy()
-        
-        if self.on_complete:
-            self.on_complete()
+            except:
+                pass
 
 def main():
     """Главная функция для тестирования модуля"""

@@ -14,7 +14,7 @@ if not exist "%VENV_DIR%\Scripts\python.exe" (
 call "%VENV_DIR%\Scripts\activate"
 
 echo Installing requirements...
-python -m pip install --upgrade pip setuptools wheel
+python -m pip install  --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.org:443 --trusted-host files.pythonhosted.org:443 --upgrade pip setuptools wheel
 echo.
 
 echo Checking pip status...
@@ -26,7 +26,7 @@ python -m pip cache purge
 echo.
 
 echo Installing project dependencies...
-pip install -r requirements.txt
+pip install  --trusted-host pypi.org --trusted-host files.pythonhosted.org --trusted-host pypi.org:443 --trusted-host files.pythonhosted.org:443 -r requirements.txt
 echo.
 
 echo Final pip check...

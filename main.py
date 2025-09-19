@@ -24,17 +24,15 @@ from pathlib import Path  # Для работы с путями файловой
 current_dir = Path(__file__).parent  # Получаем директорию, где находится этот файл
 sys.path.insert(0, str(current_dir))  # Добавляем её в начало списка путей для поиска модулей
 
-# Инициализация отладочного логирования
+# Инициализация логирования loguru
 # Система логирования должна быть инициализирована до импорта других модулей
 try:
-    # Импортируем необходимые функции из модуля логирования
-    from modules.debug_logger import init_debug_logging, LogCategory, error, critical, info
+    # Импортируем необходимые функции из модуля логирования loguru
+    from modules.loguru_logger import init_loguru_logging, LogCategory, error, critical, info
     
     # Инициализируем систему логирования с настройками:
-    debug_logger = init_debug_logging(
+    loguru_logger = init_loguru_logging(
         log_dir=current_dir / "logs",           # Директория для сохранения логов
-        enable_console=True,                    # Включить вывод в консоль
-        enable_file=True,                       # Включить сохранение в файл
         max_file_size=10 * 1024 * 1024,        # Максимальный размер файла лога (10MB)
         max_files=10                            # Количество резервных файлов логов
     )
@@ -45,7 +43,21 @@ try:
 except Exception as e:
     # Если не удалось инициализировать логирование, выводим ошибку в консоль
     print(f"Ошибка инициализации логирования: {e}")
-    debug_logger = None  # Устанавливаем логгер в None для проверок
+    loguru_logger = None  # Устанавливаем логгер в None для проверок
+
+# Глобальная обработка исключений
+def handle_exception(exc_type, exc_value, exc_traceback):
+    """Глобальная обработка необработанных исключений"""
+    if loguru_logger:
+        critical(f"Необработанное исключение: {exc_type.__name__}: {exc_value}", 
+                LogCategory.ERROR, exception=exc_value)
+    else:
+        print(f"Необработанное исключение: {exc_type.__name__}: {exc_value}")
+        import traceback
+        traceback.print_exception(exc_type, exc_value, exc_traceback)
+
+# Устанавливаем глобальный обработчик исключений
+sys.excepthook = handle_exception
 
 # Импорт и запуск основного модуля приложения
 try:
@@ -55,8 +67,8 @@ try:
     # Проверяем, что скрипт запущен напрямую (а не импортирован)
     if __name__ == "__main__":
         # Логируем запуск главного приложения, если логгер доступен
-        if debug_logger:
-            debug_logger.info("Запуск главного приложения", LogCategory.SYSTEM)
+        if loguru_logger:
+            info("Запуск главного приложения", LogCategory.SYSTEM)
         
         # Запускаем главную функцию приложения
         main()
@@ -66,7 +78,7 @@ except ImportError as e:
     error_msg = f"Ошибка импорта: {e}"
     
     # Логируем критическую ошибку, если логгер доступен
-    if debug_logger:
+    if loguru_logger:
         critical(error_msg, LogCategory.SYSTEM, exception=e)
     else:
         # Иначе выводим в консоль
@@ -83,7 +95,7 @@ except Exception as e:
     error_msg = f"Неожиданная ошибка: {e}"
     
     # Логируем критическую ошибку, если логгер доступен
-    if debug_logger:
+    if loguru_logger:
         critical(error_msg, LogCategory.SYSTEM, exception=e)
     else:
         # Иначе выводим в консоль

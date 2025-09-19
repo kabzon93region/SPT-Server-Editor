@@ -41,8 +41,8 @@ class TraderEditor:
         
         # Добавляем поддержку управления окном
         try:
-            from modules.ui_utils import add_window_controls, create_window_control_buttons
-            add_window_controls(self.window)
+            from modules.ui_utils import add_module_window_controls, create_window_control_buttons
+            add_module_window_controls(self.window)
         except Exception as e:
             print(f"Ошибка добавления управления окном: {e}")
         
@@ -346,12 +346,28 @@ class TraderEditor:
         
         info_text = "Уровни лояльности:\n\n"
         
-        for level, requirements in loyalty_levels.items():
-            info_text += f"Уровень {level}:\n"
-            info_text += f"  Минимальный уровень: {requirements.get('minLevel', 'N/A')}\n"
-            info_text += f"  Минимальная сумма продаж: {requirements.get('minSalesSum', 'N/A')}\n"
-            info_text += f"  Минимальная репутация: {requirements.get('minStanding', 'N/A')}\n"
-            info_text += f"  Минимальный уровень опасности: {requirements.get('minDangerLevel', 'N/A')}\n\n"
+        # Проверяем тип данных loyalty_levels
+        if isinstance(loyalty_levels, dict):
+            # Если это словарь, обрабатываем как раньше
+            for level, requirements in loyalty_levels.items():
+                info_text += f"Уровень {level}:\n"
+                info_text += f"  Минимальный уровень: {requirements.get('minLevel', 'N/A')}\n"
+                info_text += f"  Минимальная сумма продаж: {requirements.get('minSalesSum', 'N/A')}\n"
+                info_text += f"  Минимальная репутация: {requirements.get('minStanding', 'N/A')}\n"
+                info_text += f"  Минимальный уровень опасности: {requirements.get('minDangerLevel', 'N/A')}\n\n"
+        elif isinstance(loyalty_levels, list):
+            # Если это список, обрабатываем каждый элемент
+            for i, level_data in enumerate(loyalty_levels):
+                if isinstance(level_data, dict):
+                    info_text += f"Уровень {i + 1}:\n"
+                    info_text += f"  Минимальный уровень: {level_data.get('minLevel', 'N/A')}\n"
+                    info_text += f"  Минимальная сумма продаж: {level_data.get('minSalesSum', 'N/A')}\n"
+                    info_text += f"  Минимальная репутация: {level_data.get('minStanding', 'N/A')}\n"
+                    info_text += f"  Минимальный уровень опасности: {level_data.get('minDangerLevel', 'N/A')}\n\n"
+                else:
+                    info_text += f"Уровень {i + 1}: {str(level_data)}\n\n"
+        else:
+            info_text += f"Данные о лояльности: {str(loyalty_levels)}\n\n"
         
         if not loyalty_levels:
             info_text = "Информация об уровнях лояльности недоступна"

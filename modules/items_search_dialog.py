@@ -33,13 +33,9 @@ except ImportError:
     from items_analyzer import ItemsAnalyzer
     
     # Заглушки для UI утилит
-    def setup_resizable_window(window, title, width=1200, height=800, min_width=800, min_height=600, fullscreen=True):
-        window.title(title)
-        window.geometry(f"{width}x{height}")
+    def setup_resizable_window(window, min_width=800, min_height=600):
         window.minsize(min_width, min_height)
         window.resizable(True, True)
-        if fullscreen:
-            window.state('normal')
     
     def apply_modern_style():
         pass
@@ -88,7 +84,9 @@ class ItemsSearchDialog:
         
         # Создание диалога с использованием утилит
         self.dialog = tk.Toplevel(parent)
-        setup_resizable_window(self.dialog, "Поиск и редактирование предметов", 1400, 900, 1000, 700, fullscreen=True)
+        setup_resizable_window(self.dialog, 1000, 700)  # Используем новую сигнатуру
+        self.dialog.title("Поиск и редактирование предметов")
+        self.dialog.geometry("1400x900")
         apply_modern_style()
         center_window(self.dialog, 1400, 900)
         self.dialog.transient(parent)
@@ -104,6 +102,9 @@ class ItemsSearchDialog:
         
         # Создание интерфейса
         self.create_widgets()
+        
+        # Обработчик закрытия окна
+        self.dialog.protocol("WM_DELETE_WINDOW", self.on_closing)
         
         # Настройка контекстных меню
         try:
@@ -174,7 +175,12 @@ class ItemsSearchDialog:
         
         # Привязка колесика мыши
         def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            try:
+                if canvas.winfo_exists():
+                    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            except tk.TclError:
+                # Виджет был уничтожен, игнорируем ошибку
+                pass
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
         
         # Главный фрейм внутри прокручиваемого контейнера
@@ -360,7 +366,12 @@ class ItemsSearchDialog:
         
         # Привязка колесика мыши
         def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            try:
+                if canvas.winfo_exists():
+                    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            except tk.TclError:
+                # Виджет был уничтожен, игнорируем ошибку
+                pass
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
     
     def create_properties_tab(self, notebook):
@@ -392,7 +403,12 @@ class ItemsSearchDialog:
         
         # Привязка колесика мыши
         def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            try:
+                if canvas.winfo_exists():
+                    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            except tk.TclError:
+                # Виджет был уничтожен, игнорируем ошибку
+                pass
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
     
     def create_advanced_tab(self, notebook):
@@ -424,7 +440,12 @@ class ItemsSearchDialog:
         
         # Привязка колесика мыши
         def _on_mousewheel(event):
-            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            try:
+                if canvas.winfo_exists():
+                    canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+            except tk.TclError:
+                # Виджет был уничтожен, игнорируем ошибку
+                pass
         canvas.bind_all("<MouseWheel>", _on_mousewheel)
     
     def create_all_parameters_tab(self, notebook):
@@ -1375,6 +1396,11 @@ class ItemsSearchDialog:
     
     def on_closing(self):
         """Обработка закрытия диалога"""
+        try:
+            # Отвязываем события мыши
+            self.dialog.unbind_all("<MouseWheel>")
+        except:
+            pass
         self.dialog.destroy()
 
 def main():

@@ -338,7 +338,7 @@ def add_window_controls(window: tk.Tk) -> None:
     window.overrideredirect(True)
     
     # Создаем фрейм для кастомной строки заголовка
-    title_bar = ttk.Frame(window, relief="raised", bd=2)
+    title_bar = ttk.Frame(window, relief="raised")
     title_bar.pack(side=tk.TOP, fill=tk.X, expand=False)
     
     # Добавляем заголовок окна
@@ -368,3 +368,58 @@ def add_window_controls(window: tk.Tk) -> None:
     title_bar.bind("<ButtonPress-1>", start_move)
     title_bar.bind("<ButtonRelease-1>", stop_move)
     title_bar.bind("<B1-Motion>", on_motion)
+
+def add_module_window_controls(window: tk.Tk) -> None:
+    """
+    Добавляет элементы управления для окон модулей (без скрытия стандартной рамки Windows)
+    
+    Args:
+        window: Окно модуля Tkinter.
+    """
+    try:
+        # НЕ скрываем стандартную рамку Windows для окон модулей
+        # window.overrideredirect(True) - убираем эту строку
+        
+        # Создаем главный контейнер для всего содержимого окна
+        main_container = ttk.Frame(window)
+        main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Создаем контейнер для содержимого модуля (без кнопок управления)
+        content_container = ttk.Frame(main_container)
+        content_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Сохраняем ссылку на контейнер содержимого в окне
+        window.content_container = content_container
+        
+    except Exception as e:
+        print(f"Ошибка добавления управления окном модуля: {e}")
+
+def add_module_window_controls_with_buttons(window: tk.Tk) -> None:
+    """
+    Добавляет элементы управления с кнопками для окон модулей
+    
+    Args:
+        window: Окно модуля Tkinter.
+    """
+    try:
+        # Создаем главный контейнер для всего содержимого окна
+        main_container = ttk.Frame(window)
+        main_container.pack(fill=tk.BOTH, expand=True)
+        
+        # Создаем фрейм для дополнительных элементов управления
+        control_frame = ttk.Frame(main_container)
+        control_frame.pack(side=tk.TOP, fill=tk.X, expand=False, padx=5, pady=5)
+        
+        # Добавляем кнопки управления окном
+        control_buttons = create_window_control_buttons(window)
+        control_buttons.pack(side=tk.RIGHT)
+        
+        # Создаем контейнер для содержимого модуля
+        content_container = ttk.Frame(main_container)
+        content_container.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
+        
+        # Сохраняем ссылку на контейнер содержимого в окне
+        window.content_container = content_container
+        
+    except Exception as e:
+        print(f"Ошибка добавления управления окном модуля: {e}")
